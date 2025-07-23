@@ -6,7 +6,7 @@ module Alu (
     output wire ALU_ZR_o
 );
 
-// Definição dos opcodes da ALU
+
 localparam AND             = 4'b0000;
 localparam OR              = 4'b0001;
 localparam SUM             = 4'b0010;
@@ -23,5 +23,30 @@ localparam NOR             = 4'b1001;
 localparam EQUAL           = 4'b0011;
 
 //insira o seu código aqui
+
+assign ALU_ZR_o = (ALU_RD_o == 32'b0);
+
+always @(ALU_OP_i, ALU_RS1_i, ALU_RS2_i) 
+begin
+    case (ALU_OP_i)
+
+        AND:            ALU_RD_o = ALU_RS1_i & ALU_RS2_i;
+        OR:             ALU_RD_o = ALU_RS1_i | ALU_RS2_i;
+        SUM:            ALU_RD_o = ALU_RS1_i + ALU_RS2_i;
+        SUB:            ALU_RD_o = ALU_RS1_i - ALU_RS2_i;
+        GREATER_EQUAL:  ALU_RD_o = $signed(ALU_RS1_i) >= $signed(ALU_RS2_i);
+        GREATER_EQUAL_U:ALU_RD_o = ALU_RS1_i >= ALU_RS2_i;
+        SLT:            ALU_RD_o = $signed(ALU_RS1_i) < $signed(ALU_RS2_i);
+        SLT_U:          ALU_RD_o = ALU_RS1_i < ALU_RS2_i;
+        SHIFT_LEFT:     ALU_RD_o = ALU_RS1_i << ALU_RS2_i[4:0];
+        SHIFT_RIGHT:    ALU_RD_o = ALU_RS1_i >> ALU_RS2_i[4:0];
+        SHIFT_RIGHT_A:  ALU_RD_o = $signed(ALU_RS1_i) >>> ALU_RS2_i[4:0];
+        XOR:            ALU_RD_o = ALU_RS1_i ^ ALU_RS2_i;
+        NOR:            ALU_RD_o = ~( ALU_RS1_i | ALU_RS2_i );
+        EQUAL:          ALU_RD_o = ALU_RS1_i === ALU_RS2_i;
+
+        default: ALU_RD_o = 32'b0;
+    endcase
+end
 
 endmodule
